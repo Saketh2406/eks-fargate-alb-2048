@@ -1,37 +1,66 @@
 # EKS Fargate + ALB Ingress (2048 Game)
 
-This repo shows how I deployed the **2048 game** on **Amazon EKS using Fargate** and exposed it publicly using **AWS ALB Ingress** via the **AWS Load Balancer Controller**.
+This repository demonstrates deploying the **2048 game** on **Amazon EKS** using **AWS Fargate** and exposing it publicly using an **Application Load Balancer (ALB)** through **Kubernetes Ingress**.
+
+---
+
+## What I Did
+
+- Created an **Amazon EKS cluster** with **Fargate** to run Kubernetes workloads without managing EC2 nodes
+- Created a **namespace (`game-2048`)** to isolate the application
+- Configured a **Fargate profile** so pods in the namespace run on Fargate
+- Deployed the **2048 game** using Kubernetes **Deployment**, **Service**, and **Ingress**
+- Installed the **AWS Load Balancer Controller** to manage ALB resources
+- Used **IRSA (IAM Roles for Service Accounts)** for secure AWS permissions
+- Exposed the application publicly using an **AWS Application Load Balancer**
+
+---
 
 ## Architecture
 
 Browser → AWS ALB → Kubernetes Ingress → Service → Pods (Fargate)
 
-## Why these choices
-
-### Why EKS?
-- Managed Kubernetes control plane (API server, etcd, scheduler)
-- AWS-native networking and IAM integration
-
-### Why Fargate?
-- No EC2 worker nodes to manage
-- AWS handles scaling/patching of compute
-- Pay per pod resources
-
-### Why Ingress (ALB) instead of NodePort/LoadBalancer?
-- Production HTTP routing at Layer 7 (paths/hosts)
-- One ALB can route multiple apps
-- Easier TLS/HTTPS later using ACM
-
-### Why AWS Load Balancer Controller?
-- It watches Kubernetes Ingress and automatically creates ALB, target groups, and rules in AWS
-
-### Why IRSA (IAM Roles for Service Accounts)?
-- Secure AWS permissions without storing AWS keys in pods
 
 ---
 
-## Step-by-step commands
+## Kubernetes Resources Used
 
-### 1) Create EKS cluster with Fargate
-```bash
-eksctl create cluster --name demo-cluster --region us-east-1 --fargate
+- Namespace
+- Deployment
+- Service (NodePort)
+- Ingress (ALB)
+- Fargate Profile
+- IAM Service Account (IRSA)
+
+---
+
+## Application
+
+- **App:** 2048 Game
+- **Source YAML:**  
+  https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
+- **Access:** Via ALB DNS name created by Ingress
+
+---
+
+## Outcome
+
+- Application runs fully on **serverless Kubernetes (Fargate)**
+- Traffic is routed using **ALB Ingress**
+- No EC2 worker nodes required
+- Follows AWS production best practices
+
+---
+
+## Screenshot
+
+<img width="1440" alt="2048 Game Running on EKS" src="https://github.com/user-attachments/assets/536b6e5a-1feb-4e8e-b000-d9c23e767267" />
+
+---
+
+## Author
+
+**Saketh Reddy**  
+Cloud / DevOps Engineer
+
+
